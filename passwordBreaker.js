@@ -1,7 +1,7 @@
 const sha256 = require('js-sha256');
 
 // a-z
-let availableItems = 26;
+let availableItems = 28;
 // max length 6 chars
 let maxLength = 4;
 // attack range
