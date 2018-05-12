@@ -1,41 +1,56 @@
-const sha256 = require('js-sha256');
+using namespace std;
 
-// a-z
-let availableItems = 26;
-// max length 6 chars
-let maxLength = 4;
-// attack range
-let attackRange = Math.pow(availableItems, maxLength);
-let testPassword = 'dbcd';
-let targetHash = sha256(testPassword);
-console.log(`Total bruteforce combinations : ${attackRange}`);
-console.log(`Attacking : ${testPassword} : ${targetHash}`);
+#include <math>
+#include <string>
+#include <vector>
+#include <picosha2.h>
 
-// 36^2, 36^1, 36^0 ect
-let splits = [];
-for (let i = 0; i < maxLength; i++) {
-    splits.push(Math.pow(availableItems, i));
+void join(const vector<string>& v, char c, string& s) { // C++ doesn't have a function to join strings that are indices of vectors as far as I know. 
+// I took a function from https://www.safaribooksonline.com/library/view/c-cookbook/0596007612/ch04s09.html to solve this predicament.
+   s.clear();
+
+   for (vector<string>::const_iterator p = v.begin();
+        p != v.end(); ++p) {
+      s += *p;
+      if (p != v.end() - 1)
+        s += c;
+   }
 }
 
-let letterMapper;
-let mappedNumber;
-let basedIndex;
-let mapped;
-let hashed;
-for (let i = 0; i < attackRange; i++) {
-    // map our letter
-    mappedNumber = i;
-    letterMapper = [];
-    for (let j = maxLength-1; j >=0; j--) {
-        basedIndex = Math.floor(mappedNumber/splits[j]);
-        letterMapper.push(String.fromCharCode(97 + basedIndex));
-        mappedNumber = mappedNumber%splits[j];
-    }
-    mapped = letterMapper.join('');
-    hashed = sha256(mapped);
-    console.log(`${mapped} hashes to: ${hashed}`);
-    if (targetHash === hashed) {
-        console.log(`PASSWORD BROKEN : '${mapped}' Attempt number: ${i}`);
-        break;
-    }
+int main(){
+int characterRange = 26; // a through z
+int passwordMaxLength = 4;
+int attackRange = math.pow(characterRange, passwordMaxLength);
+std::string password = "abcd"; // desired password to crack the hash of
+picosha2::hash_hex_str(password, password_hashed);
+std::cout << "total bruteforce combos: " + attackRange << endl;
+std::cout << "attacking: " + password + " with hash " + password_hashed << endl;
+
+std::vector <int> characterBucket;
+	for(int i = 0; i < passwordMaxLength; i++){
+		characterBucket[i] = math.pow(characterRange, passwordMaxLength)
+	}
+
+std::vector <string> letterMapper;
+int mappedNumber;
+int basedIndex; 
+// mappedString isn't declared here - it's declared below as the third argument of join() detailed above.
+// hashed isn't declared here - it will be created automatically when picosha2::hash_hex_str() is ran as the second argument or hash_hex_str()
+
+	for(int i = 0; i <  attackRange; i++){
+		mappedNumber = i;
+		for(int j = passwordMaxLength - 1; j >= 0; j--){
+			basedIndex = math.floor(mappedNumber/characterBucket[j]);
+			basedIndex_ASCII = 97 + basedIndex;
+			letterMapper[i] = (char) basedIndex_ASCII;
+			mappedNumber = mappedNumber%characterBucket[j];
+		}
+		join(letterMapper, "/", mappedString);
+		picosha2::hash_hex_str(mappedString, hashedString);
+		std::cout << mappedString + " hashes to: " + hashedString << endl;
+		if(password_hashed = hashedString){
+			std::cout << "PASSWORD BROKEN: " + mappedString + " Attempt number: " + i << endl;
+			break;
+		}
+	}
 }
